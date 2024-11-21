@@ -4,7 +4,7 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Trend } from 'k6/metrics';
 
-export const getContactsDuration = new Trend('get_contacts', true);
+// export const getContactsDuration = new Trend('get_contacts', true);
 
 export const options = {
   thresholds: {
@@ -34,7 +34,7 @@ export default function () {
 
   const res = http.get(`${baseUrl}`, params);
 
-  getContactsDuration.add(res.timings.duration);
+  // getContactsDuration.add(res.timings.duration);
 
   // check(res, {
   //   'get contacts - status 200': () => res.status === OK
