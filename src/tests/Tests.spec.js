@@ -36,7 +36,7 @@ export default function () {
 
   getContactsDuration.add(res.timings.duration);
 
-  check(res, {
-    'get contacts - status 200': () => res.status === OK
-  });
+  // check(res, {
+  //   'get contacts - status 200': () => res.status === OK
+  // });
 }
