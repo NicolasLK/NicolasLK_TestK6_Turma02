@@ -14,7 +14,7 @@ export const options = {
   },
   stages: [
     { duration: '15s', target: 10 },
-    { duration: '25s', target: 30 },
+    { duration: '20s', target: 30 },
     { duration: '20s', target: 50 },
     // 1m
     { duration: '30s', target: 70 },
@@ -22,7 +22,7 @@ export const options = {
     // 2m
     { duration: '40s', target: 140 },
     { duration: '40s', target: 210 },
-    { duration: '20s', target: 260 },
+    { duration: '25s', target: 260 },
     { duration: '40s', target: 300 }
     // 4m20s
   ]
@@ -48,12 +48,11 @@ export default function () {
 
   const res = http.get(`${baseUrl}`, params);
 
-  // getPostsDuration.add(res.timings.duration);
+  getPostsDuration.add(res.timings.duration);
 
-  // RateContentOK.add(res.status === OK);
+  RateContentOK.add(res.status === OK);
 
   check(res, {
-    'get posts - duration': () => res.timings.duration,
     'get posts - status 200': () => res.status === OK
   });
 }
