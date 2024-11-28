@@ -2,16 +2,30 @@ import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporte
 import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { Trend } from 'k6/metrics';
+import { Trend, Rate } from 'k6/metrics';
 
-export const getContactsDuration = new Trend('get_contacts', true);
+export const getPostsDuration = new Trend('get_contacts', true);
+export const RateContentOK = new Rate('content_OK');
 
 export const options = {
-  // thresholds: {
-  //   http_req_failed: ['rate<0.01'],
-  //   http_req_duration: ['avg<10000']
-  // },
-  stages: [{ duration: '1m', target: 1000 }]
+  thresholds: {
+    http_req_duration: ['p(95)<5700'], // 95%
+    http_req_failed: ['rate<0.12'] // 12%
+  },
+  stages: [
+    { duration: '15s', target: 10 },
+    { duration: '25s', target: 30 },
+    { duration: '20s', target: 50 },
+    // 1m
+    { duration: '30s', target: 70 },
+    { duration: '30s', target: 110 },
+    // 2m
+    { duration: '40s', target: 140 },
+    { duration: '40s', target: 210 },
+    { duration: '20s', target: 260 },
+    { duration: '40s', target: 300 }
+    // 4m20s
+  ]
 };
 
 export function handleSummary(data) {
@@ -34,9 +48,12 @@ export default function () {
 
   const res = http.get(`${baseUrl}`, params);
 
-  getContactsDuration.add(res.timings.duration);
+  // getPostsDuration.add(res.timings.duration);
+
+  // RateContentOK.add(res.status === OK);
 
   check(res, {
-    'get contacts - status 200': () => res.status === OK
+    'get posts - duration': () => res.timings.duration,
+    'get posts - status 200': () => res.status === OK
   });
 }
